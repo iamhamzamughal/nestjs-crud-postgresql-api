@@ -1,0 +1,34 @@
+import { Module } from '@nestjs/common';
+
+import { BooksModule } from './books/books.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get('DB_HOST'),
+        port: parseInt(config.get('DB_PORT', '5432')),
+        username: config.get('DB_USERNAME'),
+        password: config.get('DB_PASSWORD'),
+        database: config.get('DB_NAME'),
+        connectTimeoutMS: 10000,
+        ssl: false,
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
+    }),
+
+    BooksModule,
+  ],
+  controllers: [],
+  providers: [],
+  exports: [],
+})
+export class AppModule {}
