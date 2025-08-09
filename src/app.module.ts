@@ -3,6 +3,10 @@ import { Module } from '@nestjs/common';
 import { BooksModule } from './books/books.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import * as nodeCrypto from 'crypto';
+(global as any).crypto = nodeCrypto;
+
 @Module({
   imports: [
     ConfigModule.forRoot({
